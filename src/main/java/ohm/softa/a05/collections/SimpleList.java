@@ -66,7 +66,7 @@ public interface SimpleList<T> extends Iterable<T> {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	default <R> SimpleList<R> map(Function<T, R> transform) {
+	default <R> SimpleList<R> map(Function<? super T,? extends R> transform) {
 		SimpleList<R> result;
 		try {
 			result = (SimpleList<R>) getClass().newInstance();

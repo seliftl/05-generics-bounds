@@ -3,13 +3,16 @@ package ohm.softa.a05.tests.collections;
 import ohm.softa.a05.collections.SimpleFilter;
 import ohm.softa.a05.collections.SimpleList;
 import ohm.softa.a05.collections.SimpleListImpl;
+import ohm.softa.a05.model.*;
 import ohm.softa.a05.tests.models.Person;
+import ohm.softa.a05.utils.PlantBedUtility;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -22,6 +25,7 @@ class SimpleListTests {
 
 	private final Logger logger = LogManager.getLogger();
 	private SimpleList<Integer> testList;
+	private PlantBed<Flower> flowerBed;
 
 	@BeforeEach
 	void setup(){
@@ -32,6 +36,12 @@ class SimpleListTests {
 		testList.add(3);
 		testList.add(4);
 		testList.add(5);
+
+		flowerBed = new PlantBed<>();
+
+		flowerBed.add(new Flower(0.4, "Golden Celebration", "Rosa", PlantColor.YELLOW));
+		flowerBed.add(new Flower(0.5, "Abracadabra", "Rosa", PlantColor.RED));
+		flowerBed.add(new Flower(0.3, "Golden Celebration", "Rosa", PlantColor.YELLOW));
 	}
 
 	@Test
@@ -110,4 +120,46 @@ class SimpleListTests {
 		SimpleList<Character> mapped = testList.map(i -> ((char) (i + 64)));
 		assertEquals(5, mapped.size());
 	}
+
+	@Test
+	void testPlant(){
+		Flower flower1 = new Flower(12.0, "Cherrieblossoms", "WildCherryRed", PlantColor.RED);
+	//	Flower flower2 = new Flower(12.0, "Cherrieblossoms", "WildCherryGreen", PlantColor.GREEN);
+
+		Shrub shrub1 = new Shrub(20.0, "Walnut", "WalnutGreen", PlantColor.GREEN);
+	//	Shrub shrub2 = new Shrub(20.0, "Walnut", "WalnutYellow", PlantColor.YELLOW);
+	}
+
+	@Test
+	void testPlantBed() {
+		PlantBed<Plant> plantBed = new PlantBed<>();
+
+		//Testplants
+		Flower flower1 = new Flower(12.0, "Cherrieblossoms", "WildCherryRed", PlantColor.RED);
+		Flower flower2 = new Flower(12.0, "Cherrieblossoms", "WildCherryYellow", PlantColor.YELLOW);
+		Shrub shrub1 = new Shrub(20.0, "Walnut", "WalnutGreen", PlantColor.GREEN);
+		Shrub shrub2 = new Shrub(20.0, "Walnut", "WalnutGreen2", PlantColor.GREEN);
+
+		plantBed.add(flower1);
+		plantBed.add(flower2);
+		plantBed.add(shrub1);
+		plantBed.add(shrub2);
+
+		assertEquals(4, plantBed.size());
+
+		SimpleList<Plant> greenPlants = plantBed.getPlantsByColor(PlantColor.GREEN);
+		for (Plant p : greenPlants) {
+			assertEquals(PlantColor.GREEN, p.getPlantColor());
+			logger.info(p.toString());
+		}
+	}
+
+		@Test
+		void testSplitByBedByColorPureness(){
+			Map<PlantColor, SimpleList<Flower>> split = PlantBedUtility.splitBedByColor(flowerBed);
+			for (Flower f : split.get(PlantColor.YELLOW)) {
+				assertEquals(PlantColor.YELLOW, f.getPlantColor());
+			}
+		}
+
 }
